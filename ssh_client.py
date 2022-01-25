@@ -1,6 +1,8 @@
 import paramiko
-from threading import Thread
 import time
+import yaml
+import pprint
+from threading import Thread
 
 class Device:
     conn = ''
@@ -61,13 +63,13 @@ class Device:
 
 if __name__ == "__main__":
 
-    print("\n==============================CISCO========================================\n")
+    # print("\n==============================CISCO========================================\n")
 
-    cisco = Device("73.215.176.112", "nkobaidze", "nikakobaidze", 4009)
+    # cisco = Device("73.215.176.112", "nkobaidze", "nikakobaidze", 4009)
     
-    # COMMAND LIST
-    command_list = ["show ip int br"]
-    cisco.command(command_list, True)
+    # # COMMAND LIST
+    # command_list = ["show ip int br"]
+    # cisco.command(command_list, True)
 
 
 
@@ -80,3 +82,108 @@ if __name__ == "__main__":
     # juniper.command(command_list)
 
     # print("\n================================END========================================\n")
+
+
+    def get_device_by_name(data, device_name):
+        for group in data:
+            
+            dev_list = data[group]
+            for device in dev_list:
+                # print(device)
+                if device['device'] == device_name:
+                    print(device)
+
+
+    def get_groups(data):
+        for group in data:
+            print(group)
+
+
+    def get_all_devs(data):
+        for group in data:
+            for device in data[group]:
+                print("{} -- {}".format(device['device'], device['ip']))
+    
+
+    def get_group_devs(data, group_name):
+        for group in data:
+            if group == group_name:
+                print(data[group])
+
+
+    with open("devlist.yaml", 'r') as devs:
+        parsed_yaml = yaml.safe_load(devs)
+
+
+
+    # print("--------------------------------------------------")
+    # print("PRINT ALL GROUPS")
+    # print("--------------------------------------------------")
+    # get_groups(parsed_yaml)
+    # print()
+    
+    # print("--------------------------------------------------")
+    # print("GET DEVICE DATA BY NAME")
+    # print("--------------------------------------------------")
+    # get_device_by_name(parsed_yaml, 'cisco801')
+    # print("--------------------------------------------------")
+    # print()
+
+    # print("--------------------------------------------------")
+    # print("GET GROUP DEVICES")
+    # print("--------------------------------------------------")
+    # get_group_devs(parsed_yaml, "juniper")
+
+
+    print("===================================================")
+    print(">> SELECT OPTION ")
+    print("1. select category")
+    print("2. select device")
+    print("===================================================")
+    
+    start_option = int(input("Enter value: "))
+
+    if start_option == 1:
+        get_groups(parsed_yaml)
+        group = input("Enter Group Name: ")
+
+        get_group_devs(parsed_yaml, group)
+
+        
+    elif start_option == 2:
+        get_all_devs(parsed_yaml)
+        device = input("Enter device name: ")
+
+        get_device_by_name(parsed_yaml, device)
+
+    print("===================================================")
+    print(">> ACTION ")
+    print("1. Run Command")
+    print("2. Make Backup")
+    print("===================================================")
+
+    action_option = int(input("Enter value: "))
+
+
+    if action_option == 1:
+        command = ''
+        print("print exit to exit command mode")
+        while command != 'exit':
+            command = input("command >> ")
+            print(command)
+            print('....command output...')
+    
+    if action_option == 2:
+        print("GET GROUP OR DEVICE")
+        print("Run Backup action")
+    
+    
+
+   
+    
+    
+
+    
+
+    
+    
